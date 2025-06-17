@@ -1,0 +1,165 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%
+% %% This file is part of the ic-templates bundle developed for the Chair of Intelligent Control Systems.
+% %% For additional information visit https://git-ce.rwth-aachen.de/marc.weber/ic-templates
+% %% Release Version  : 0.9.14
+% %% Release Date     : 2024-03-06
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesExplPackage {goodexternalize} {2024/03/06} {0.9.14} {LaTeX package for customized improved externalize experience}
+
+% NOTE: this was the previous functionality needed without expl3
+% % use this package to detect the latex engine
+% \RequirePackage{iftex}
+
+
+
+
+% and the operating system: this need to be loaded AFTER the shellescp package
+% \RequirePackage{ifplatform}
+
+
+% load the usual pgfplots packages
+\ExplSyntaxOff
+\RequirePackage{tikz}
+\RequirePackage{pgfplots}
+\RequirePackage{xparse}
+
+
+% use arbitrary tikz libraries, e.g.
+% \usetikzlibrary{spy}
+
+% ! at least use the external library
+\usetikzlibrary{external}
+
+\pgfplotsset{compat=1.18}
+\ExplSyntaxOn
+
+% setup tikz for proper externalization
+\sys_if_engine_luatex:T
+{
+\tikzset{
+external / system ~ call={%
+% TODO: reuse the $aux_dir variable from .latexmkrc for --output-directory, don't now how yet
+echo ~
+\sys_if_platform_unix:T {"}
+***~~~Externalizing~"\image.tikz"
+\sys_if_platform_unix:T {"}
+~&&~
+lualatex ~ \tikzexternalcheckshellescape ~ --interaction=batchmode ~  --output-directory="tmp" ~  --jobname="\image" ~ "\texsource" > "tmp/\image-2.log"
+},
+}
+}
+\sys_if_engine_pdftex:T
+{
+\tikzset{
+external/system ~ call={%
+% TODO: reuse the $aux_dir variable from .latexmkrc for --output-directory, don't now how yet
+echo ~
+\sys_if_platform_unix:T {"}
+~ ***~~~Externalizing~"\image.tikz"
+\sys_if_platform_unix:T {"}
+~&&~
+pdflatex ~ \tikzexternalcheckshellescape ~ --interaction=batchmode  ~ --output-directory="tmp" ~  --jobname="\image" ~ "\texsource" > "tmp/\image-2.log"
+~&&~
+echo~"~~~Externalization~complete."
+},
+}
+}
+
+\ExplSyntaxOff
+\tikzset{
+    % If the resulting pdfs could not be found, there is the possibility to include them from another location
+    /pgf/images/include external/.code={%
+        \includegraphics{tmp/#1}%
+      },
+  }
+
+% configure gnuplot to use the new filesystem hierarchy to output its auxiliary files there as well
+% TODO: get the path from .latexmkrc
+\pgfkeys{/pgf/plot/gnuplot call={cd tmp && gnuplot}}
+
+
+
+% activate tikzexternalize
+\tikzexternalize[
+    % mode=list and make,
+    only named=true,%
+    % optimize=false,
+  ] % activate
+
+
+% redefine \input to make use of new functionality
+\ExplSyntaxOn
+\let\oldinput=\input
+\cs_new_protected:Nn \tikzinput:n  {
+
+    %  parse the given path
+    \file_parse_full_name:nNNN {#1}
+    \l__slo_input_dir_tl
+    \l__slo_input_base_tl
+    \l__slo_input_ext_tl
+
+    % NOTE: uncomment to debug
+    % (\l__slo_input_dir_tl)
+    % (\l__slo_input_base_tl)
+    % (\l__slo_input_ext_tl)
+
+    % NOTE: deprecated old latex2e way:
+    % \filename@parse{#1}
+    % (\filename@area)
+    % (\filename@base)
+    % (\filename@ext)
+
+
+    \str_if_eq:VnTF {\l__slo_input_ext_tl} {.tikz}
+      {
+        % TRUE: use modified input
+        % NOTE: as we're using expl3, we need replace the space by '~'
+        \sys_if_shell_restricted:T {
+            % TODO: abort with error
+          }
+        \sys_if_platform_unix:TF
+          {
+            % UNIX
+            \sys_shell_now:x {mkdir~-p~"tmp/\l__slo_input_dir_tl"}
+          }
+          {
+            % for windows, mkdir behaves like mkdir --parent
+            \sys_shell_now:x {if~not~exist~"tmp/\l__slo_input_dir_tl" ~ mkdir~"tmp/\l__slo_input_dir_tl"}
+          }
+
+
+        % set artifact name to reflect the original path
+        \tikzsetnextfilename{\l__slo_input_dir_tl/\l__slo_input_base_tl}
+
+        % actually input the original file
+        % NOTE: to be compatible with all existing packages, in particular circuitikz and lipsum, \oldinput has to be called as old TeX macro WITHOUT the { }.
+        \oldinput #1
+      }
+      {
+        % FALSE: use default input
+        % actually input the original file
+        % NOTE: to be compatible with all existing packages, in particular circuitikz and lipsum, \oldinput has to be called as old TeX macro WITHOUT the { }.
+        \oldinput #1
+      }
+
+
+
+  }
+
+
+\ExplSyntaxOn
+
+% NOTE: argument type u of xparse is deprecated, and exists only for compatibility reason. This allows the TeX way of calling the macro using \input arg1  as well as the LaTeX way using \input{arg1}.
+\RenewDocumentCommand{\input}{u{ }}{
+    % this defines the user interface
+    %  the functionality is defined in letex3
+    \tikzinput:n{#1}
+  }
+
+
+\endinput

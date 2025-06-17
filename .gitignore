@@ -1,0 +1,29 @@
+# Directories for auxillary and build files
+tmp/*
+build/*
+
+# # Auxillary files from compiling .tex
+# *.gz
+# *.xsim
+# *.aux
+# *.toc
+# *.fls
+# *.auxlock
+# *.fdb_latexmk
+# *.out
+
+# Log files
+*.log
+
+# # Auxillary files from externalizing tikz
+# *.dpth
+# *.md5
+
+# # Created .pfds
+# *.pdf
+# *.mp4
+
+# # Files created by gnuplot
+# *.gnuplot
+# *.table
+# *.dep
