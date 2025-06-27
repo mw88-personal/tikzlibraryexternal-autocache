@@ -1,0 +1,35 @@
+\documentclass{article}
+
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat = newest}
+\usepgfplotslibrary{groupplots}
+
+\usepackage{cleveref}
+
+\usepackage{goodexternalize}
+
+\begin{document}
+{main2.tex}\\
+Figure~\ref{fig:first}, expected: 1\\
+Figure~\ref{fig:second}, expected: 2\\
+\Cref{subcap:2}
+
+\begin{figure}
+  \includegraphics[width=3cm]{example-image}
+  \caption{first}
+  \label{fig:first}
+\end{figure}
+
+\begin{figure}
+  %   \includegraphics[width=3cm]{example-image}
+  \input{src/subdirA/image.tikz}
+  \caption{second}
+  \label{fig:second}
+\end{figure}
+\end{document}

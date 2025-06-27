@@ -16,11 +16,12 @@
 $pdf_mode = 4;
 
 # Move all axuiliary files to a separate directory, so they do not clutter up the project directory
-$emulate_aux = 1;
-$aux_dir = "tmp";
+# $emulate_aux = 1;
+# $aux_dir = "tmp";
 
 # Move the compiled files (and synctex) to a separate directory
-$out_dir = 'build';
+$out_dir = 'tmp';
+$out2_dir = "build";
 
 # Location of source files
 $source_dir = 'src';
@@ -30,7 +31,9 @@ $source_dir = 'src';
 # @default_files = ($source_dir.'/*.tex');
 # @default_files = ('file1.tex', 'file2.tex', ..., 'fileN.tex');
 # @default_files = ('*.tex');
-@default_files = ('vue05-solution.tex');
+# @default_files = ('main1.tex', 'main2.tex');
+@default_files = ('main2.tex', 'main1.tex');
+
 
 # add the source dir as a lookup path when using include or input
 ensure_path('TEXINPUTS', "./$source_dir/");
@@ -60,6 +63,8 @@ $aux_out_dir_report = 1;
 # for debugging:
 $kpsewhich_show = 1;
 $show_time = 1;
+
+$cleanup_includes_generated  = 1;
 
 #  This command updates all the variables $pdflatex, $lualatex, $xelatex and $latex to be equipped with the given additional arguments and flags
 set_tex_cmds(" --shell-escape  -interaction=batchmode  --file-line-error --synctex=1 ");

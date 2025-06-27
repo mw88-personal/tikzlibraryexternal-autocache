@@ -1,0 +1,43 @@
+% TikZ image with axis environment and manually placed subcaption
+\begin{tikzpicture}
+  % Creating an axis environment
+  \begin{groupplot}[
+      % General settings
+      % nyquist:simple,%
+      % Groupplot settings
+      group style={%
+          group size=2 by 2,%
+          horizontal sep=1cm,%
+          vertical sep=1cm,%
+        },%
+      % Geometry of the plot
+      width=4cm,%,
+      height=4cm,%
+      % domain=0.01:100,%
+      % Limits
+      xmin=-1.25,%
+      xmax=1.25,%
+      ymin=-1.25,%
+      ymax=1.25,%
+      % Title
+      title style={%
+          at={(current axis.north west)},%
+          inner sep=0,%
+          anchor={south west},%
+          font=\normalfont,%
+          color=black,%
+          text width=1em,%
+        },%
+    ]%
+    \nextgroupplot[
+        title={\subcaption{}\label{subcap:1}}
+      ]
+    \addplot [only marks,mark=+,thick,red] (-1 , 0);
+
+    \nextgroupplot[
+        title={\subcaption{}\label{subcap:2}}
+      ]
+    \nextgroupplot[]
+    \nextgroupplot[]
+  \end{groupplot}
+\end{tikzpicture}

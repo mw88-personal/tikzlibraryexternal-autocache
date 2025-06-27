@@ -7,9 +7,14 @@
     "runServices": [
         "vscode"
     ],
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {}
+    },
     "shutdownAction": "stopCompose",
     "mounts": [
-        "source=${localWorkspaceFolder},target=/ws,type=bind"
+        "source=${localWorkspaceFolder},target=/ws,type=bind",
+        "source=${env:SSH_AUTH_SOCK},target=/ssh-agent,type=bind,consistency=cached",
+        "source=${localEnv:USERPROFILE}/.gitconfig,target=/home/dev/.gitconfig,type=bind,consistency=cached"
     ],
     "workspaceFolder": "/ws",
     "postCreateCommand": "",
@@ -20,7 +25,11 @@
                 // Other
                 // "vscode-icons-team.vscode-icons" // keep icons from default profile
                 /* add toto comment highlighting */
-                "Gruntfuggly.todo-tree"
+                "Gruntfuggly.todo-tree",
+                "ms-vscode-remote.remote-containers",
+                "redhat.vscode-yaml",
+                "streetsidesoftware.code-spell-checker",
+                "aaron-bond.better-comments"
             ],
             "settings": {
                 // General settings
@@ -91,7 +100,8 @@
                         ]
                     }
                 ]
-            }
+            },
+            "remoteUser": "dev"
         }
     }
 }
