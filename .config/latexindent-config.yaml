@@ -1,0 +1,249 @@
+# Settings for custom indentation of tikzset child elements and tilde in keys
+fineTuning:
+    keyEqualsValuesBracesBrackets:
+      name: '[a-zA-Z@\*0-9_\/.\h:\#-~]+?'
+
+# indentRulesGlobal:
+#   environments: 1                   # 0/h-space
+#   commands: 1                       # 0/h-space
+#   optionalArguments: 0              # 0/h-space
+#   mandatoryArguments: 1             # 0/h-space
+#   ifElseFi: 0                       # 0/h-space
+#   items: 0                          # 0/h-space
+#   keyEqualsValuesBracesBrackets: 1  # 0/h-space
+#   namedGroupingBracesBrackets: 1    # 0/h-space
+#   UnNamedGroupingBracesBrackets: 1  # 0/h-space
+#   specialBeginEnd: 1                # 0/h-space
+#   afterHeading: 0                   # 0/h-space
+#   filecontents: 0                   # 0/h-space
+
+
+# commandCodeBlocks:
+#   commandNames:
+#     tikzset: 1
+# lookForAlignDelims:
+#   tikzset:
+#     delims: 1
+#     indentChildren: 1
+#     commaSeparatedList: 1
+
+# indentRules:
+#   tikzset: "  "
+#   tikzset/.*: "AAAA"
+
+# General settings for consistent indentation
+defaultIndent: "  "
+indentPreamble: 0
+verbatimEnvironments:
+  verbatim: 1
+  lstlisting: 1
+  minted: 1
+fileExtensionPreference:
+  .tex: 1
+  .sty: 2
+  .cls: 3
+  .bib: 4
+lookForPreamble:
+  .tex: 1
+  .sty: 0
+  .cls: 1
+  .bib: 0
+
+
+
+# latexindent can be called to act on a file without using the file's extension,
+# e.g, simply
+#       latexindent myfile
+# in which case the choice of file extension is chosen
+# according to the choices made in fileExtensionPreference
+# Other file extensions can be added.
+# fileExtensionPreference:
+#   .tex: 1
+#   .sty: 2
+#   .cls: 3
+#   .bib: 4
+
+# # indent preamble
+# indentPreamble: 0
+
+# lookForPreamble:
+#   .tex: 1
+#   .sty: 0
+#   .cls: 1
+  .bib: 0
+# Additions for handling tilde (~) in tikzset key-value pairs
+# replace:
+#   # - before:
+#   #     name: tilde-in-tikzset-keys
+#   #     regex: "([a-zA-Z0-9/]+)\~([a-zA-Z0-9/]+)"
+#   #     within: tikzset
+#   #   after:
+#   #     replacement: "$1 AAAA $2"
+#   - this: somethingwicked
+#     that: thiswaycomes
+#     lookForThis: 1
+# Settings for custom indentation of tikzset child elements
+# defaultIndent: "  BB  "
+
+# Settings for custom indentation of tikzset child elements and tilde in keys
+# fineTuning:
+#   keyEqualsValuesBracesBrackets:
+#     modifyLineBreaks:
+#       name: "[a-zA-Z@\\*0-9_\\/.:\\#\\-~]+[a-zA-Z@\\*0-9_\\/.\\h\\{\\}\\:\\#\\-~]*?"
+
+# Settings for custom indentation of tikzset child elements and tilde in keys
+# fineTuning:
+#   keyEqualsValuesBracesBrackets:
+#     modifyLineBreaks:
+#       name: "[a-zA-Z0-9_\/.@:*#-~]+"
+
+# lookForAlignDelims:
+#   tikzset:
+#     delims: 1
+#     indentChildren: 1
+
+# indentRules:
+#   tikzset: "  "
+#   tikzset/.*: "AAAA"
+# lookForAlignDelims:
+#   tikzset:
+#     delims: 1
+#     indentChildren: 1
+
+# indentRules:
+#   tikzset: " DD "
+#   tikzset/.*: "----"
+# commandCodeBlocks:
+#   expl3Command:
+#     regex: "\\[a-zA-Z@:_]+(:[nNxV][a-zA-Z]*)+"
+#     body: 1
+#     indentAfterThisCommand: 1
+#     indentBeforeChildren: 1
+#     indentChildren: 1
+#   expl3Conditional:
+#     regex: "\\[a-zA-Z@:_]+:[TF][a-zA-Z]*"
+#     body: 1
+#     indentAfterThisCommand: 1
+#     indentBeforeChildren: 1
+#     indentChildren: 1
+#   expl3Function:
+#     regex: "\\cs_new(_protected)?:Nn"
+#     body: 1
+#     indentAfterThisCommand: 1
+#     indentBeforeChildren: 1
+#     indentChildren: 1
+
+# lookForAlignDelims:
+#   align*:
+#     alignDoubleBackSlash: 1
+#   align:
+#     alignDoubleBackSlash: 1
+#   aligned:
+#     alignDoubleBackSlash: 1
+#   tabular:
+#     delims: 1
+#     alignDoubleBackSlash: 1
+#     spacesBeforeDoubleBackSlash: 1
+#     multiColumnGrouping: 0
+#     alignRowsWithoutMaxDelims: 0
+#     spacesBeforeAmpersand: 1
+#     spacesAfterAmpersand: 1
+#     justification: left
+#     alignFinalDoubleBackSlash: 0
+#     dontMeasure: 0
+#     delimiterRegEx: '(?<!\\)(&)'
+#     delimiterJustification: left
+#     lookForChildCodeBlocks: 1
+#   tabularx:
+#     delims: 1
+#   tikzset:
+#     delims: 1
+#     indentChildren: 1
+#   external/system~call:
+#     delims: 1
+#     indentChildren: 1
+#   external-autocache/output~dir:
+#     delims: 1
+#     indentChildren: 1
+#   external-autocache/input~extensions:
+#     delims: 1
+#     indentChildren: 1
+#     commaSeparatedList: 1
+#   external-autocache/clean~cache:
+#     delims: 1
+#     indentChildren: 1
+
+# noAdditionalIndentGlobal:
+#   environments: 0
+#   commands: 0
+#   optionalArguments: 0
+#   mandatoryArguments: 0
+#   ifElseFi: 0
+#   items: 0
+#   keyEqualsValuesBracesBrackets: 0
+#   namedGroupingBracesBrackets: 0
+#   UnNamedGroupingBracesBrackets: 0
+#   specialBeginEnd: 0
+#   afterHeading: 0
+#   filecontents: 0
+
+# indentRules:
+#   expl3Command: "  "
+#   expl3Conditional: "  "
+#   expl3Function: "  "
+#   tikzset: " ASDF      "
+#   external/system~call: "    "
+#   external-autocache/output~dir: "    "
+#   external-autocache/input~extensions: "    "
+#   external-autocache/clean~cache: "    "
+
+# modifyLineBreaks:
+#   textWrapOptions:
+#     columns: 80
+#   environments:
+#     tikzpicture:
+#       begin: 1
+#       body: 1
+#       end: 1
+#   commands:
+#     expl3Command:
+#       begin: 1
+#       body: 1
+#       end: 1
+#     expl3Conditional:
+#       begin: 1
+#       body: 1
+#       end: 1
+#     expl3Function:
+#       begin: 1
+#       body: 1
+#       end: 1
+#     tikzset:
+#       begin: 1
+#       body: 1
+#       end: 1
+#     external/system~call:
+#       begin: 1
+#       body: 1
+#       end: 1
+#     external-autocache/output~dir:
+#       begin: 1
+#       body: 1
+#       end: 1
+#     external-autocache/input~extensions:
+#       begin: 1
+#       body: 1
+#       end: 1
+#     external-autocache/clean~cache:
+#       begin: 1
+#       body: 1
+#       end: 1
+
+# # Preprocess tildes in key names to treat them as spaces
+# replace:
+#   - before:
+#       name: tilde-in-tikzset-keys
+#       regex: "(external-autocache/[a-zA-Z0-9/]+)~([a-zA-Z0-9/]+)"
+#       within: tikzset
+#     after:
+#       replacement: "$1 $2"

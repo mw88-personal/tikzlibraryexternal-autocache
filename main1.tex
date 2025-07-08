@@ -6,13 +6,19 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 
+\usepackage{tikz}
 \usepackage{pgfplots}
-\pgfplotsset{compat = newest}
-\usepgfplotslibrary{groupplots}
+\usepackage{xparse}
 
+
+\pgfplotsset{compat = newest}
+\usepackage{hyperref}
 \usepackage{cleveref}
 
-\usepackage{goodexternalize}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{external}
+\usetikzlibrary{external-autocache}
+\pgfplotsset{compat=1.18}
 
 \begin{document}
 {main1.tex}\\
@@ -22,18 +28,21 @@
 
 
 \begin{figure}
-	\includegraphics[width=3cm]{example-image}
-	\caption{first}\label{fig:first}
+  \includegraphics[width=3cm]{example-image}
+  \caption{first}
+  \label{fig:first}
 \end{figure}
 
 \begin{figure}
-	\includegraphics[width=3cm]{example-image}
-	\caption{second}\label{fig:second}
+  \includegraphics[width=3cm]{example-image}
+  \caption{second}
+  \label{fig:second}
 \end{figure}
 
 \begin{figure}[h]
-	%   \includegraphics[width=3cm]{example-image}
-	\input{src/subdirA/image.tikz}
-	\caption{third}\label{fig:third}
+  %   \includegraphics[width=3cm]{example-image}
+  \input{src/subdirA/image.tikz}
+  \caption{third}
+  \label{fig:third}
 \end{figure}
 \end{document}

@@ -32,7 +32,7 @@ $source_dir = 'src';
 # @default_files = ('file1.tex', 'file2.tex', ..., 'fileN.tex');
 # @default_files = ('*.tex');
 # @default_files = ('main1.tex', 'main2.tex');
-@default_files = ('main2.tex', 'main1.tex');
+@default_files = ('*.tex');
 
 
 # add the source dir as a lookup path when using include or input
@@ -54,17 +54,19 @@ ensure_path('TTFONTS', "./texmf/fonts/truetype//");
 $bibtex_use = 1;
 
 
-# Produce less console output
-# $silent = 1;
+# Cleanup settings
+$clean_ext = 'aux log bbl blg toc out tdo synctex.gz fls fdb_latexmk *.external-systemcall.log';
+$cleanup_includes_generated = 1;
 
-# print informaton about used directories to console
+# Compiler settings
+set_tex_cmds(" --shell-escape -interaction=batchmode --file-line-error --synctex=1 ");
+
+# Debugging and reporting
 $aux_out_dir_report = 1;
-
-# for debugging:
 $kpsewhich_show = 1;
 $show_time = 1;
+$silent = 0;
 
-$cleanup_includes_generated  = 1;
-
-#  This command updates all the variables $pdflatex, $lualatex, $xelatex and $latex to be equipped with the given additional arguments and flags
-set_tex_cmds(" --shell-escape  -interaction=batchmode  --file-line-error --synctex=1 ");
+# Ignore non-critical warnings
+$warning_cmd = '';
+$max_repeat = 5; # Allow multiple runs to resolve references

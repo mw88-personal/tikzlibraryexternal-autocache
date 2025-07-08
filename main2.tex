@@ -6,13 +6,19 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 
+\usepackage{tikz}
 \usepackage{pgfplots}
+\usepackage{xparse}
+
+
 \pgfplotsset{compat = newest}
-\usepgfplotslibrary{groupplots}
 
 \usepackage{cleveref}
 
-\usepackage{goodexternalize}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{external}
+\usetikzlibrary{external-autocache}
+\pgfplotsset{compat=1.18}
 
 \begin{document}
 {main2.tex}\\
@@ -21,15 +27,15 @@ Figure~\ref{fig:second}, expected: 2\\
 \Cref{subcap:2}
 
 \begin{figure}
-  \includegraphics[width=3cm]{example-image}
-  \caption{first}
-  \label{fig:first}
+	\includegraphics[width=3cm]{example-image}
+	\caption{first}
+	\label{fig:first}
 \end{figure}
 
 \begin{figure}
-  %   \includegraphics[width=3cm]{example-image}
-  \input{src/subdirA/image.tikz}
-  \caption{second}
-  \label{fig:second}
+	%   \includegraphics[width=3cm]{example-image}
+	\input{src/subdirA/image.tikz}
+	\caption{second}
+	\label{fig:second}
 \end{figure}
 \end{document}
