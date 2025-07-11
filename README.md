@@ -47,23 +47,13 @@ A LaTeX/Ti*k*Z library for caching and externalizing Ti*k*Z figures with automat
 ## Configuration
 Add to your LaTeX document:
 ```latex
-\documentclass{article}
-\usepackage{tikz,pgfplots,subcaption}
-\usetikzlibrary{external,external-autocache}
-
 % Optional settings
 \tikzset{
   external-autocache/output dir = tmp,
   external-autocache/input extensions = {.tikz},
   external-autocache/verbose = true
 }
-\begin{document}
-\begin{figure}
-  \input{src/example-directory/equations.tikz}
-  \caption{Control system responses}
-  \label{fig:equations}
-\end{figure}
-\end{document}
+
 ```
 
 ### Configuration Options

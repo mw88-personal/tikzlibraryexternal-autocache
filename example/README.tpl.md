@@ -1,5 +1,9 @@
 {{ Preamble }}
 
+<!-- BEGIN INSTALLATION -->
+{{ INSTALLATION }}
+<!-- END INSTALLATION -->
+
 <!-- BEGIN EXAMPLES -->
 {{ EXAMPLES }}
 <!-- END EXAMPLES -->
