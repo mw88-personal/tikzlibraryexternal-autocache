@@ -1,40 +1,25 @@
-# Ti*k*Z External Autocache Library (v{{version}})
+{{ Preamble }}
 
-A LaTeX/Ti*k*Z library for caching and externalizing Ti*k*Z figures with automatic directory management.
+<!-- BEGIN FEATURES -->
+{{ FEATURES }}
+<!-- END FEATURES -->
 
-{{features}}
+<!-- BEGIN REQUIREMENTS -->
+{{ REQUIREMENTS }}
+<!-- END REQUIREMENTS -->
 
-{{requirements}}
+<!-- BEGIN INSTALLATION -->
+{{ INSTALLATION }}
+<!-- END INSTALLATION -->
 
-{{installation}}
+<!-- BEGIN CONFIG -->
+{{ CONFIG }}
+<!-- END CONFIG -->
 
-## Configuration
-Add to your LaTeX document:
-```latex
-\documentclass{article}
-\usepackage{tikz}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.18}
-\usetikzlibrary{external,external-autocache,groupplots}
-\tikzexternalize
-\tikzset{
-  external-autocache/output~dir=tmp,
-  external-autocache/input~extensions={.tikz},
-  external-autocache/verbose=true
-}
-\begin{document}
-\begin{figure}
-  \input{src/subdirA/equations.tikz}
-  \caption{Control system responses}
-  \label{fig:equations}
-\end{figure}
-\end{document}
-```
+<!-- BEGIN TROUBLESHOOTING -->
+{{ TROUBLESHOOTING }}
+<!-- END TROUBLESHOOTING -->
 
-{{troubleshooting}}
-
-{{windows}}
-
-{{license}}
-
-{{issues}}
+<!-- BEGIN LICENSE -->
+{{ LICENSE }}
+<!-- END LICENSE -->
