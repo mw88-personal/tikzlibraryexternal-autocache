@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up TeX Live
+        uses: teatimeguest/setup-texlive@v3
+        with:
+          packages: latexindent pgfplots expl3 cleveref
+          update-tlmgr: true
+
+      - name: Build Core Artifact
+        run: |
+          basepath=tikz-external-autocache-core-${{ github.event.release.tag_name }}
+          mkdir -p ${basepath}/texmf/tex/latex/
+          cp src/tikzlibraryexternal-autocache.code.tex ${basepath}/texmf/tex/latex/
+          # TODO add README with latexmkrc instructions
+          zip -r tikz-external-autocache-core.zip ${basepath}
+
+      - name: Build Example Artifact
+        run: |
+          # TODO: change these steps, to just pack up the example. Don't compile it during release
+          cd example
+          export TEXINPUTS=.:./:
+          latexmk -pdf -shell-escape main1.tex
+          latexmk -pdf -shell-escape main2.tex
+          cd ..
+          cp -r example release-example
+          zip -r tikz-external-autocache-example.zip release-example
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            tikz-external-autocache-core.zip
+            tikz-external-autocache-example.zip
+          body: |
+            Release ${{ github.ref_name }}
+            - Core: `tikzlibraryexternal-autocache.code.tex` for drop-in use.
+            - Example: Multi-root project with XKCD-style control theory groupplot and subcaption references.
+          draft: false
+          prerelease: false
+```

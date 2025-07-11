@@ -1,0 +1,28 @@
+\documentclass{article}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+\usepackage{cleveref}
+\usetikzlibrary{external,external-autocache}
+\tikzset{
+  external-autocache/output dir = tmp,
+  external-autocache/input extensions = {.tikz},
+  external-autocache/verbose = true
+}
+\begin{document}
+% \section{Control System Analysis}
+
+See \Cref{subcap:pid,subcap:state} for system responses (expected: 1a, 1b).
+
+\begin{figure}[h]
+  \centering
+  \input{src/example-directory/equations.tikz}
+  \caption{Control system responses.}
+  \label{fig:equations}
+\end{figure}
+
+\end{document}

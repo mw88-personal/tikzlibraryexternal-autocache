@@ -1,70 +1,79 @@
-# Development container
+# LaTeX Devcontainer (v0.9.6-test02)
 
-Development container that can be used with VSCode.
+This is the core LaTeX devcontainer release, using a prebuilt Docker image.
 
-It works on Linux, Windows and OSX.
 
-## Requirements
+<!-- BEGIN USAGE -->
+## Usage
+1. Download a release from GitHub:
+   - Core: `latex-devcontainer-core-v0.9.6-test02.zip` (prebuilt image).
+   - Source: `latex-devcontainer-source-v0.9.6-test02.zip` (local build).
+   - Example: `latex-devcontainer-example-v0.9.6-test02.zip` (prebuilt image with demo).
+2. Extract to your project:
+   ```bash
+   cd /path/to/your/project
+   unzip ~/Downloads/latex-devcontainer-core-v0.9.6-test02.zip
+   mv latex-devcontainer-core-v0.9.6-test02/.devcontainer .
+   # For example release:
+   unzip ~/Downloads/latex-devcontainer-example-v0.9.6-test02.zip
+   mv latex-devcontainer-example-v0.9.6-test02/.devcontainer .
+   mv latex-devcontainer-example-v0.9.6-test02/example .
+   # Copy other dependencies as needed
+   ```
+3. Open in VS Code:
+   ```bash
+   code .
+   # Reopen in Container
+   ```
+4. Compile LaTeX files using `Ctrl+Alt+B` in VS Code or:
+   ```bash
+   latexmk
+   # configuration is read from latexmkrc
+   ```
+5. Split a PDF (using poppler-utils):
+   ```bash
+   pdfseparate build/main.pdf build/page-%d.pdf
+   ```
 
-- [VS code](https://code.visualstudio.com/download) installed
-- [VS code remote containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) installed
-- [Docker](https://www.docker.com/products/docker-desktop) installed and running
-- [Docker Compose](https://docs.docker.com/compose/install/) installed
 
-## Setup
+<!-- BEGIN CONFIG -->
+## Configuration Overrides
+- Place per-project configuration files in your project directory below `.config/` to override defaults:
+  - `.config/chktex-config.rc`: Overrides `~/.chktexrc`.
+  - `.config/latexindent-config.yaml`: Overrides default latexindent config.
+  - `.config/ohmyposh-theme.json`: Overrides default ohmyposh theme.
+- Example:
+  ```bash
+  echo "VerbTeX {custom}" > .config/chktex-config.rc
+  chktex -l .config/chktex-config.rc main.tex
+  ```
 
-1. Create the following files on your host if you don't have them:
 
-    ```sh
-    touch ~/.gitconfig ~/.zsh_history
-    ```
+<!-- BEGIN DEBUG -->
+## Debugging
+- **SSH Agent**: Ensure the SSH agent is running on the host (Windows/WSL2):
+  ```bash
+  # On WSL2
+  eval $(ssh-agent)
+  ssh-add ~/.ssh/id_rsa
+  # Verify
+  ssh -T git@github.com
+  ```
+- **Git Configuration**: Verify Git configuration is passed through from the host:
+  ```bash
+  git config --global --list
+  # Set if needed
+  git config --global user.name "Your Name"
+  git config --global user.email "your.email@example.com"
+  ```
+- **User/Permissions**: Check UID/GID in container:
+  ```bash
+  id dev
+  # Should output: uid=1001(dev) gid=1001(dev)
+  ```
+- **Line Endings**: Ensure LF endings:
+  ```bash
+  git config --global core.autocrlf false
+  file main.tex # Should show LF
+  ```
 
-    Note that the development container will create the empty directories `~/.docker` and `~/.ssh` if you don't have them.
-
-1. **For Docker on OSX or Windows without WSL**: ensure your home directory `~` is accessible by Docker.
-1. **For Docker on Windows without WSL:** if you want to use SSH keys, bind mount your host `~/.ssh` to `/tmp/.ssh` instead of `~/.ssh` by changing the `volumes` section in the [docker-compose.yml](docker-compose.yml).
-1. Open the command palette in Visual Studio Code (CTRL+SHIFT+P).
-1. Select `Remote-Containers: Open Folder in Container...` and choose the project directory.
-
-## Customization
-
-### Customize the image
-
-You can make changes to the [Dockerfile](Dockerfile) and then rebuild the image. For example, your Dockerfile could be:
-
-```Dockerfile
-FROM qmcgaw/latexdevcontainer
-RUN apk add curl
-```
-
-To rebuild the image, either:
-
-- With VSCode through the command palette, select `Remote-Containers: Rebuild and reopen in container`
-- With a terminal, go to this directory and `docker-compose build`
-
-### Customize VS code settings
-
-You can customize **settings** and **extensions** in the [devcontainer.json](devcontainer.json) definition file.
-
-### Entrypoint script
-
-You can bind mount a shell script to `/home/vscode/.welcome.sh` to replace the [current welcome script](shell/.welcome.sh).
-
-### Publish a port
-
-To access a port from your host to your development container, publish a port in [docker-compose.yml](docker-compose.yml). You can also now do it directly with VSCode without restarting the container.
-
-### Run other services
-
-1. Modify [docker-compose.yml](docker-compose.yml) to launch other services at the same time as this development container, such as a test database:
-
-    ```yml
-      database:
-        image: postgres
-        restart: always
-        environment:
-          POSTGRES_PASSWORD: password
-    ```
-
-1. In [devcontainer.json](devcontainer.json), change the line `"runServices": ["vscode"],` to `"runServices": ["vscode", "database"],`.
-1. In the VS code command palette, rebuild the container.

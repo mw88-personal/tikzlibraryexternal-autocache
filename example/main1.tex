@@ -1,0 +1,45 @@
+\documentclass{article}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+\usepackage{cleveref}
+\usetikzlibrary{external}
+\usetikzlibrary{external-autocache}
+
+% \tikzset{
+%   external-autocache/output dir = tmp,
+%   external-autocache/input extensions={.tikz},
+%   external-autocache/verbose = true
+% }
+\begin{document}
+See \Cref{fig:control} for a theorist's struggle, and \Cref{subcap:pid,subcap:state} for system responses (expected: 2a, 2b).
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}
+    % XKCD-style stick figure
+    \draw (0,0) circle (0.3); % Head
+    \draw (0,-0.5) -- (0,-1.5); % Body
+    \draw (-0.3,-0.8) -- (-0.6,-1.2); % Left arm
+    \draw (0.3,-0.8) -- (0.6,-1.2); % Right arm
+    \draw (-0.3,-1.5) -- (-0.5,-2); % Left leg
+    \draw (0.3,-1.5) -- (0.5,-2); % Right leg
+    \node[align=center] at (1.5,-1) {My system’s\\oscillating\\into chaos!};
+    \node at (0,0.5) {Control Theorist};
+  \end{tikzpicture}
+  \caption{Stick-figure control theorist battling an unstable system.}
+  \label{fig:control}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \input{src/example-directory/equations.tikz}
+  \caption{Control system responses.}
+  \label{fig:equations}
+\end{figure}
+
+\end{document}

@@ -1,10 +1,11 @@
+# Release: v0.9.6-test02
 services:
   debian-latex:
     # Use the build: object, if you want to build the image from scratch. In this case, place the Dockerfile from the project root in the .devcontainer directory and comment out the image: object.
     # build:
     #   context: .
     #   dockerfile: Dockerfile
-    image: noctuidus/devcontainer-latex:0.9.3
+    image: noctuidus/devcontainer-latex:v0.9.6-test02
     volumes:
       - type: bind
         source: "${PWD}"

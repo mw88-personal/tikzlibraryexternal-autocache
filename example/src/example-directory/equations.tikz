@@ -1,0 +1,51 @@
+\begin{tikzpicture}
+  \begin{groupplot}[
+      group style={
+          group size=2 by 1,
+          horizontal sep=2cm
+        },
+      width=5cm,
+      height=4cm,
+      xlabel={Time},
+      ylabel={Output},
+      domain=0:5,
+      xmin=0, xmax=5,
+      ymin=0, ymax=1.5,
+      % XKCD-style font and simplicity
+      font=\footnotesize,
+      tick style={thin,black},
+      axis line style={-},
+      % Title
+      title style={%
+          at={(current axis.north west)},%
+          inner sep=0,%
+          anchor={south west},%
+          font=\normalfont\footnotesize,
+          color=black,
+          text width=3cm,% this entry is necessary to make the title into a parbox, which is required by \subcaption{} as parent element
+        }
+    ]
+    \nextgroupplot[
+        title={
+            \subcaption{
+                PID: Overshoot Overshare
+              }\label{subcap:pid}
+          }
+      ]
+    \addplot[smooth,blue] {1-exp(-x)+0.5*exp(-x)*sin(deg(4*x))}; % PID step response with overshoot
+    \node[
+        font=\footnotesize
+      ] at (4,1.2) {\(y(t)\)};
+    \nextgroupplot[
+        title={
+            \subcaption{
+                State-Space: Matrix Mayhem
+              }\label{subcap:state}
+          },
+      ]
+    \addplot[smooth,red] {1-exp(-2*x)*cos(deg(2*x))}; % State-space damped oscillation
+    \node[
+        font=\footnotesize
+      ] at (4,1.2) {\(x(t)\)};
+  \end{groupplot}
+\end{tikzpicture}
