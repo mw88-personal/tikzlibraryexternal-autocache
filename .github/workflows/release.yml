@@ -1,52 +1,122 @@
-name: Release
+name: Create Core and Example Releases
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout
+      # Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up TeX Live
-        uses: teatimeguest/setup-texlive@v3
-        with:
-          packages: latexindent pgfplots expl3 cleveref
-          update-tlmgr: true
-
-      - name: Build Core Artifact
+      # Debug: List repository contents
+      - name: List repository contents
         run: |
-          basepath=tikz-external-autocache-core-${{ github.event.release.tag_name }}
-          mkdir -p ${basepath}/texmf/tex/latex/
+          ls -R
+        shell: bash
+
+      # Extract README sections
+      - name: Extract README sections
+        run: |
+          mkdir -p temp
+          awk '/<!-- BEGIN FEATURES -->/{p=1}/<!-- END FEATURES -->/{p=0}p' README.md > temp/Features.md
+          awk '/<!-- BEGIN REQUIREMENTS -->/{p=1}/<!-- END REQUIREMENTS -->/{p=0}p' README.md > temp/Requirements.md
+          awk '/<!-- BEGIN INSTALLATION -->/{p=1}/<!-- END INSTALLATION -->/{p=0}p' README.md > temp/Installation.md
+          awk '/<!-- BEGIN CONFIG -->/{p=1}/<!-- END CONFIG -->/{p=0}p' README.md > temp/Config.md
+          awk '/<!-- BEGIN EXAMPLES -->/{p=1}/<!-- END EXAMPLES -->/{p=0}p' README.md > temp/Examples.md
+          awk '/<!-- BEGIN TROUBLESHOOTING -->/{p=1}/<!-- END TROUBLESHOOTING -->/{p=0}p' README.md > temp/Troubleshooting.md
+          awk '/<!-- BEGIN WINDOWS -->/{p=1}/<!-- END WINDOWS -->/{p=0}p' README.md > temp/Windows.md
+          awk '/<!-- BEGIN LICENSE -->/{p=1}/<!-- END LICENSE -->/{p=0}p' README.md > temp/License.md
+        shell: bash
+
+      # Create core release zip
+      - name: Create core release zip
+        run: |
+          basepath=tikzexternal-autocache-core-${{ github.event.release.tag_name }}
+          mkdir -p ${basepath}/texmf/tex/latex
           cp src/tikzlibraryexternal-autocache.code.tex ${basepath}/texmf/tex/latex/
-          # TODO add README with latexmkrc instructions
-          zip -r tikz-external-autocache-core.zip ${basepath}
+          # Generate README-external-autocache.md from template
+          cp src/README.tpl.md ${basepath}/README-external-autocache.md
+          echo "# Ti*k*Z External Autocache (${{ github.event.release.tag_name }})" > ${basepath}/Preamble.md
+          echo "" >> ${basepath}/Preamble.md
+          echo "This is the core Ti*k*Z external autocache library release, containing the library file for drop-in use." >> ${basepath}/Preamble.md
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ Preamble }}/, p)}1' ${basepath}/Preamble.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.md
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ FEATURES }}/, p)}1' temp/Features.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.md
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ REQUIREMENTS }}/, p)}1' temp/Requirements.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.md
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ INSTALLATION }}/, p)}1' temp/Installation.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.md
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ CONFIG }}/, p)}1' temp/Config.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.md
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ TROUBLESHOOTING }}/, p)}1' temp/Troubleshooting.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.md
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ LICENSE }}/, p)}1' temp/License.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.md
+          # Add release tag comments
+          for file in ${basepath}/texmf/tex/latex/*.tex; do
+            echo "% Release: ${{ github.event.release.tag_name }}" | cat - "$file" > temp && mv temp "$file"
+          done
+          for file in ${basepath}/*.md; do
+            echo "<!-- Release: ${{ github.event.release.tag_name }} -->" | cat - "$file" > temp && mv temp "$file"
+          done
+          # Replace {{TAG}} in Markdown
+          find ${basepath} -type f -name "*.md" -exec sed -i "s/{{TAG}}/${{ github.event.release.tag_name }}/g" {} \;
+          # Debug: Verify files
+          cat ${basepath}/README-external-autocache.md
+          zip -r tikzexternal-autocache-core.zip ${basepath}
+        shell: bash
 
-      - name: Build Example Artifact
+      # Create example release zip
+      - name: Create example release zip
         run: |
-          # TODO: change these steps, to just pack up the example. Don't compile it during release
-          cd example
-          export TEXINPUTS=.:./:
-          latexmk -pdf -shell-escape main1.tex
-          latexmk -pdf -shell-escape main2.tex
-          cd ..
-          cp -r example release-example
-          zip -r tikz-external-autocache-example.zip release-example
+          basepath=tikzexternal-autocache-example-${{ github.event.release.tag_name }}
+          mkdir -p ${basepath}/{.devcontainer,texmf/tex/latex,src/example-directory}
+          cp -r .devcontainer/* ${basepath}/.devcontainer/
+          cp -r example/{main1.tex,main2.tex,latexmkrc,.gitattributes,.gitignore} ${basepath}/
+          cp -r example/src/example-directory/{equations.tikz,image.tikz} ${basepath}/src/example-directory/
+          cp src/tikzlibraryexternal-autocache.code.tex ${basepath}/texmf/tex/latex/
+          cp .gitattributes ${basepath}/
+          cp .gitignore ${basepath}/
+          # Generate example/README.md from template
+          cp example/README.tpl.md ${basepath}/README-external-autocache.
+          echo "# Ti*k*Z External Autocache (${{ github.event.release.tag_name }})" > ${basepath}/Preamble.md
+          echo "" >> ${basepath}/Preamble.md
+          echo "This is the example Ti*k*Z external autocache release, including demo files and a development environment." >> ${basepath}/Preamble.md
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ Preamble }}/, p)}1' ${basepath}/Preamble.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ EXAMPLES }}/, p)}1' temp/Examples.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ TROUBLESHOOTING }}/, p)}1' temp/Troubleshooting.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.
+          awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ WINDOWS }}/, p)}1' temp/Windows.md ${basepath}/README-external-autocache.md > temp && mv temp ${basepath}/README-external-autocache.
+          # Add release tag comments
+          for file in ${basepath}/*.tex ${basepath}/texmf/tex/latex/*.tex; do
+            echo "% Release: ${{ github.event.release.tag_name }}" | cat - "$file" > temp && mv temp "$file"
+          done
+          for file in ${basepath}/*.md; do
+            echo "<!-- Release: ${{ github.event.release.tag_name }} -->" | cat - "$file" > temp && mv temp "$file"
+          done
+          for file in ${basepath}/*.rc; do
+            echo "# Release: ${{ github.event.release.tag_name }}" | cat - "$file" > temp && mv temp "$file"
+          done
+          # Replace {{TAG}} in Markdown
+          find ${basepath} -type f -name "*.md" -exec sed -i "s/{{TAG}}/${{ github.event.release.tag_name }}/g" {} \;
+          # Debug: Verify files
+          cat ${basepath}/README-external-autocache.md
+          cat ${basepath}/.devcontainer/devcontainer.json
+          rm -rf temp ${basepath}/Preamble.md
+          zip -r tikzexternal-autocache-example.zip ${basepath}
+        shell: bash
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            tikz-external-autocache-core.zip
-            tikz-external-autocache-example.zip
-          body: |
-            Release ${{ github.ref_name }}
-            - Core: `tikzlibraryexternal-autocache.code.tex` for drop-in use.
-            - Example: Multi-root project with XKCD-style control theory groupplot and subcaption references.
-          draft: false
-          prerelease: false
-```
+      # Upload core release zip
+      - name: Upload core release zip
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} tikzexternal-autocache-core.zip --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+
+      # Upload example release zip
+      - name: Upload example release zip
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} tikzexternal-autocache-example.zip --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash

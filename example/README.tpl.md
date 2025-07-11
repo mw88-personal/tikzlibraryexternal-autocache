@@ -1,0 +1,13 @@
+{{ Preamble }}
+
+<!-- BEGIN EXAMPLES -->
+{{ EXAMPLES }}
+<!-- END EXAMPLES -->
+
+<!-- BEGIN TROUBLESHOOTING -->
+{{ TROUBLESHOOTING }}
+<!-- END TROUBLESHOOTING -->
+
+<!-- BEGIN WINDOWS -->
+{{ WINDOWS }}
+<!-- END WINDOWS -->
