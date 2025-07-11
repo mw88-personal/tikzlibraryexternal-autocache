@@ -134,13 +134,13 @@ jobs:
           awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ TROUBLESHOOTING }}/, p)}1' temp/Troubleshooting.md temp/example_temp3.md > temp/example_temp4.md
           awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ WINDOWS }}/, p)}1' temp/Windows.md temp/example_temp4.md > ${basepath}/README-external-autocache.md
           # Add release tag comments
-          for file in ${basepath}/*.tex ${basepath}/texmf/tex/latex/*.tex ${basepath}/.devcontainer/*.json; do
+          for file in ${basepath}/*.tex ${basepath}/texmf/tex/latex/*.tex; do
             echo "% Release: ${{ github.event.release.tag_name }}" | cat - "$file" > temp/tex_json_temp && mv temp/tex_json_temp "$file"
           done
-          for file in ${basepath}/*.md ${basepath}/.devcontainer/*.md; do
+          for file in ${basepath}/*.md; do
             echo "<!-- Release: ${{ github.event.release.tag_name }} -->" | cat - "$file" > temp/md_temp && mv temp/md_temp "$file"
           done
-          for file in ${basepath}/*.rc ${basepath}/.devcontainer/*.{yml,yaml}; do
+          for file in ${basepath}/*.rc; do
             echo "# Release: ${{ github.event.release.tag_name }}" | cat - "$file" > temp/rc_yml_temp && mv temp/rc_yml_temp "$file"
           done
           # Replace {{TAG}} in Markdown (not in .devcontainer files)
