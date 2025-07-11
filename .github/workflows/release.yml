@@ -47,11 +47,20 @@ jobs:
           basepath=tikzexternal-autocache-core-${{ github.event.release.tag_name }}
           mkdir -p ${basepath}/texmf/tex/latex
           cp src/tikzlibraryexternal-autocache.code.tex ${basepath}/texmf/tex/latex/
+          # Verify placeholders exist in tikzlibraryexternal-autocache.code.tex
+          if ! grep -q "{{DATE}}" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex; then
+            echo "Error: {{DATE}} placeholder not found in tikzlibraryexternal-autocache.code.tex"
+            exit 1
+          fi
+          if ! grep -q "{{VERSION}}" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex; then
+            echo "Error: {{VERSION}} placeholder not found in tikzlibraryexternal-autocache.code.tex"
+            exit 1
+          fi
           # Replace placeholders in tikzlibraryexternal-autocache.code.tex
           current_date=$(date -u +%Y/%m/%d)
           version=$(echo "${{ github.event.release.tag_name }}" | sed 's/^v//')
-          sed -i "s/{{DATE}}/$current_date/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
-          sed -i "s/{{VERSION}}/$version/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
+          sed -i "s#{{DATE}}#$current_date#" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
+          sed -i "s#{{VERSION}}#$version#" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
           # Verify template exists
           if [ ! -f src/README.tpl.md ]; then
             echo "Error: src/README.tpl.md not found"
@@ -77,7 +86,7 @@ jobs:
             echo "<!-- Release: ${{ github.event.release.tag_name }} -->" | cat - "$file" > temp/md_temp && mv temp/md_temp "$file"
           done
           # Replace {{TAG}} in Markdown
-          find ${basepath} -type f -name "*.md" -exec sed -i "s/{{TAG}}/${{ github.event.release.tag_name }}/g" {} \;
+          find ${basepath} -type f -name "*.md" -exec sed -i "s#{{TAG}}#${{ github.event.release.tag_name }}#" {} \;
           # Debug: Verify files
           cat ${basepath}/README-external-autocache.md
           cat ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
@@ -95,11 +104,20 @@ jobs:
           cp src/tikzlibraryexternal-autocache.code.tex ${basepath}/texmf/tex/latex/
           cp .gitattributes ${basepath}/
           cp .gitignore ${basepath}/
+          # Verify placeholders exist in tikzlibraryexternal-autocache.code.tex
+          if ! grep -q "{{DATE}}" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex; then
+            echo "Error: {{DATE}} placeholder not found in tikzlibraryexternal-autocache.code.tex"
+            exit 1
+          fi
+          if ! grep -q "{{VERSION}}" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex; then
+            echo "Error: {{VERSION}} placeholder not found in tikzlibraryexternal-autocache.code.tex"
+            exit 1
+          fi
           # Replace placeholders in tikzlibraryexternal-autocache.code.tex
           current_date=$(date -u +%Y/%m/%d)
           version=$(echo "${{ github.event.release.tag_name }}" | sed 's/^v//')
-          sed -i "s/{{DATE}}/$current_date/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
-          sed -i "s/{{VERSION}}/$version/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
+          sed -i "s#{{DATE}}#$current_date#" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
+          sed -i "s#{{VERSION}}#$version#" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
           # Verify template exists
           if [ ! -f example/README.tpl.md ]; then
             echo "Error: example/README.tpl.md not found"
@@ -126,7 +144,7 @@ jobs:
             echo "# Release: ${{ github.event.release.tag_name }}" | cat - "$file" > temp/rc_yml_temp && mv temp/rc_yml_temp "$file"
           done
           # Replace {{TAG}} in Markdown (not in .devcontainer files)
-          find ${basepath} -type f -name "*.md" -not -path "${basepath}/.devcontainer/*" -exec sed -i "s/{{TAG}}/${{ github.event.release.tag_name }}/g" {} \;
+          find ${basepath} -type f -name "*.md" -not -path "${basepath}/.devcontainer/*" -exec sed -i "s#{{TAG}}#${{ github.event.release.tag_name }}#" {} \;
           # Debug: Verify files
           cat ${basepath}/README-external-autocache.md
           cat ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
