@@ -47,8 +47,10 @@ jobs:
           basepath=tikzexternal-autocache-core-${{ github.event.release.tag_name }}
           mkdir -p ${basepath}/texmf/tex/latex
           cp src/tikzlibraryexternal-autocache.code.tex ${basepath}/texmf/tex/latex/
-          cp .gitattributes ${basepath}/
-          cp .gitignore ${basepath}/
+          # Update \ProvidesExplFile with current date and version
+          current_date=$(date -u +%Y/%m/%d)
+          version=$(echo "${{ github.event.release.tag_name }}" | sed 's/^v//')
+          sed -i "s/\\ProvidesExplFile {tikzlibraryexternal-autocache} {[0-9]\{4\}\/[0-9]\{2\}\/[0-9]\{2\}} {[0-9]\+\.[0-9]\+\.[0-9]\+}/{tikzlibraryexternal-autocache} {$current_date} {$version}/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
           # Verify template exists
           if [ ! -f src/README.tpl.md ]; then
             echo "Error: src/README.tpl.md not found"
@@ -77,6 +79,7 @@ jobs:
           find ${basepath} -type f -name "*.md" -exec sed -i "s/{{TAG}}/${{ github.event.release.tag_name }}/g" {} \;
           # Debug: Verify files
           cat ${basepath}/README-external-autocache.md
+          cat ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
           zip -r tikzexternal-autocache-core.zip ${basepath}
         shell: bash
 
@@ -84,13 +87,17 @@ jobs:
       - name: Create example release zip
         run: |
           basepath=tikzexternal-autocache-example-${{ github.event.release.tag_name }}
-          mkdir -p ${basepath}/{.devcontainer,example/texmf/tex/latex,example/src/example-directory}
+          mkdir -p ${basepath}/{.devcontainer,texmf/tex/latex,src/example-directory}
           cp -r .devcontainer/* ${basepath}/.devcontainer/
-          cp -r example/{main1.tex,main2.tex,latexmkrc,.gitattributes,.gitignore} ${basepath}/example/
-          cp -r example/src/example-directory/{equations.tikz,image.tikz} ${basepath}/example/src/example-directory/
-          cp src/tikzlibraryexternal-autocache.code.tex ${basepath}/example/texmf/tex/latex/
+          cp -r example/{main1.tex,main2.tex,latexmkrc,.gitattributes,.gitignore} ${basepath}/
+          cp -r example/src/example-directory/{equations.tikz,image.tikz} ${basepath}/src/example-directory/
+          cp src/tikzlibraryexternal-autocache.code.tex ${basepath}/texmf/tex/latex/
           cp .gitattributes ${basepath}/
           cp .gitignore ${basepath}/
+          # Update \ProvidesExplFile with current date and version
+          current_date=$(date -u +%Y/%m/%d)
+          version=$(echo "${{ github.event.release.tag_name }}" | sed 's/^v//')
+          sed -i "s/\\ProvidesExplFile {tikzlibraryexternal-autocache} {[0-9]\{4\}\/[0-9]\{2\}\/[0-9]\{2\}} {[0-9]\+\.[0-9]\+\.[0-9]\+}/{tikzlibraryexternal-autocache} {$current_date} {$version}/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
           # Verify template exists
           if [ ! -f example/README.tpl.md ]; then
             echo "Error: example/README.tpl.md not found"
@@ -107,19 +114,20 @@ jobs:
           awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ TROUBLESHOOTING }}/, p)}1' temp/Troubleshooting.md temp/example_temp3.md > temp/example_temp4.md
           awk 'NR==FNR {p=p $0 "\n"; next} {sub(/{{ WINDOWS }}/, p)}1' temp/Windows.md temp/example_temp4.md > ${basepath}/README-external-autocache.md
           # Add release tag comments
-          for file in ${basepath}/example/*.tex ${basepath}/example/texmf/tex/latex/*.tex ${basepath}/.devcontainer/*.json; do
+          for file in ${basepath}/*.tex ${basepath}/texmf/tex/latex/*.tex ${basepath}/.devcontainer/*.json; do
             echo "% Release: ${{ github.event.release.tag_name }}" | cat - "$file" > temp/tex_json_temp && mv temp/tex_json_temp "$file"
           done
           for file in ${basepath}/*.md ${basepath}/.devcontainer/*.md; do
             echo "<!-- Release: ${{ github.event.release.tag_name }} -->" | cat - "$file" > temp/md_temp && mv temp/md_temp "$file"
           done
-          for file in ${basepath}/example/*.rc ${basepath}/.devcontainer/*.{yml,yaml}; do
+          for file in ${basepath}/*.rc ${basepath}/.devcontainer/*.{yml,yaml}; do
             echo "# Release: ${{ github.event.release.tag_name }}" | cat - "$file" > temp/rc_yml_temp && mv temp/rc_yml_temp "$file"
           done
           # Replace {{TAG}} in Markdown (not in .devcontainer files)
           find ${basepath} -type f -name "*.md" -not -path "${basepath}/.devcontainer/*" -exec sed -i "s/{{TAG}}/${{ github.event.release.tag_name }}/g" {} \;
           # Debug: Verify files
           cat ${basepath}/README-external-autocache.md
+          cat ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
           cat ${basepath}/.devcontainer/devcontainer.json
           rm -rf temp
           zip -r tikzexternal-autocache-example.zip ${basepath}
