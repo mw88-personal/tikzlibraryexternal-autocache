@@ -47,10 +47,11 @@ jobs:
           basepath=tikzexternal-autocache-core-${{ github.event.release.tag_name }}
           mkdir -p ${basepath}/texmf/tex/latex
           cp src/tikzlibraryexternal-autocache.code.tex ${basepath}/texmf/tex/latex/
-          # Update \ProvidesExplFile with current date and version
+          # Replace placeholders in tikzlibraryexternal-autocache.code.tex
           current_date=$(date -u +%Y/%m/%d)
           version=$(echo "${{ github.event.release.tag_name }}" | sed 's/^v//')
-          sed -i "s/\\ProvidesExplFile {tikzlibraryexternal-autocache} {[0-9]\{4\}\/[0-9]\{2\}\/[0-9]\{2\}} {[0-9]\+\.[0-9]\+\.[0-9]\+}/{tikzlibraryexternal-autocache} {$current_date} {$version}/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
+          sed -i "s/{{DATE}}/$current_date/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
+          sed -i "s/{{VERSION}}/$version/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
           # Verify template exists
           if [ ! -f src/README.tpl.md ]; then
             echo "Error: src/README.tpl.md not found"
@@ -94,10 +95,11 @@ jobs:
           cp src/tikzlibraryexternal-autocache.code.tex ${basepath}/texmf/tex/latex/
           cp .gitattributes ${basepath}/
           cp .gitignore ${basepath}/
-          # Update \ProvidesExplFile with current date and version
+          # Replace placeholders in tikzlibraryexternal-autocache.code.tex
           current_date=$(date -u +%Y/%m/%d)
           version=$(echo "${{ github.event.release.tag_name }}" | sed 's/^v//')
-          sed -i "s/\\ProvidesExplFile {tikzlibraryexternal-autocache} {[0-9]\{4\}\/[0-9]\{2\}\/[0-9]\{2\}} {[0-9]\+\.[0-9]\+\.[0-9]\+}/{tikzlibraryexternal-autocache} {$current_date} {$version}/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
+          sed -i "s/{{DATE}}/$current_date/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
+          sed -i "s/{{VERSION}}/$version/" ${basepath}/texmf/tex/latex/tikzlibraryexternal-autocache.code.tex
           # Verify template exists
           if [ ! -f example/README.tpl.md ]; then
             echo "Error: example/README.tpl.md not found"
