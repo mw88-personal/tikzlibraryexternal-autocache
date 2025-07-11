@@ -125,5 +125,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
-
-          gh release upload ${{ github.event.release.tag_name }} tikzexternal-autocache-example.zip --clobber
